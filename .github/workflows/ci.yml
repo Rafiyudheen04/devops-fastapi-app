@@ -1,0 +1,32 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install fastapi "uvicorn[standard]"
+
+      - name: Test import
+        run: |
+          python -c "import fastapi; import uvicorn"
+
+      - name: Build Docker image
+        run: |
+          docker build -t fastapi-devops-app .
